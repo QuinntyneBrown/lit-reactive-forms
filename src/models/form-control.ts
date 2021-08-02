@@ -26,7 +26,12 @@ export class FormControl extends AbstractControl {
         this.value = value;
     }
 
-    patchValue(value: any, options?: Object): void {
+    patchValue(value: any, options: {
+        onlySelf?: boolean,
+        emitEvent?: boolean,
+        emitModelToViewChange?: boolean,
+        emitViewToModelChange?: boolean
+      } = {}): void {
 
     }
     reset(value?: any, options?: Object): void {

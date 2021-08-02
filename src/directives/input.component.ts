@@ -1,4 +1,3 @@
-import { ControlValueAccessor } from './control-value-accessor';
 import { FormControl } from '../models/form-control';
 import { FORM_CONTROL_CONNECTED } from '../core/constants';
 import { Subject, takeUntil, tap } from 'rxjs';
@@ -39,8 +38,9 @@ export class InputComponent extends HTMLInputElement {
         ).subscribe();
 
 
-        this.addEventListener("keyup", v => {
-
+        this.addEventListener("keyup", value => {
+            this.control.patchValue(value, { emitEvent: false });
+            //this.control.validate()?
         });
     }
 
