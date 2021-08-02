@@ -1,2 +1,2 @@
 export * from './app.component';
-export * from './push.directive';
+export * from '../../src/core/async.directive';

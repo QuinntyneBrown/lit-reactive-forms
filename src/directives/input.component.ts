@@ -25,24 +25,24 @@ export class InputComponent extends BaseControlComponent(HTMLInputElement) imple
     
     private readonly _destroyed$ = new Subject();
 
-    public control: AbstractControl;
+
 
     connectedCallback() {
         super.connectedCallback();
         
         this.registerOnChange((value: any) =>  {
-            this.control.patchValue(value,{
+            this.formControl.patchValue(value, {
                 emitEvent: true
             })
         });
         
-        this.control.valueChanges
+        this.formControl.valueChanges
         .pipe(
             takeUntil(this._destroyed$),
             tap(x => (this.value = x))
         ).subscribe();
 
-        this.control.statusChanges
+        this.formControl.statusChanges
         .pipe(
             takeUntil(this._destroyed$),
             tap(x => { 

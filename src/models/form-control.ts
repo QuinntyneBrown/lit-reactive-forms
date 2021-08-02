@@ -61,19 +61,4 @@ export class FormControl extends AbstractControl {
     _syncPendingControls(): boolean {
         return false;
     }
-
-    public static create(host: HTMLElement,name: string, value:any = null, validators?: any[] | null): FormControl {
-        var control = new FormControl(value, validators);
-
-        host.addEventListener(FORM_CONTROL_CONNECTED, event$ => {
-            event$.stopPropagation();
-
-            if((event$ as CustomEvent).detail.formControl == name) {
-                Object.assign((event$ as CustomEvent).detail, { control });
-            }
-        });
-
-        return control;
-    }
-
 }

@@ -1,12 +1,10 @@
-import { nothing } from "lit";
-import { Directive, directive, PartInfo } from "lit/directive.js";
 import { AbstractControl } from "src/models/abstract-control";
-import { FormControl } from "src/models/form-control";
 import { FORM_CONTROL_CONNECTED } from "../core/constants";
 import { Constructor } from '../core/constructor';
-import { FormControlName } from "./form-control-name";
+
 
  export interface ControlValueAccessor {
+
    writeValue(obj: any): void;
  
    registerOnChange(fn: any): void;
@@ -15,38 +13,30 @@ import { FormControlName } from "./form-control-name";
  
    setDisabledState?(isDisabled: boolean): void;
 
-   control: AbstractControl;
+   formControl: AbstractControl;
  }
 
 export function BaseControlComponent<TBase extends Constructor>(Base: TBase) {
   return class extends Base {
 
-    connectedCallback() {
+    private _formControl: AbstractControl;
 
-      var formControl = (this as any).getAttribute("[formControl]");
-
-      var customEvent = new CustomEvent(FORM_CONTROL_CONNECTED, {
-        bubbles: true,
-        composed: true,
-        cancelable: false,
-        detail: { 
-          formControl
-        }            
-      });
-      
-      (this as any).dispatchEvent(customEvent);
-      
-      this._setControlAndInitialValue((customEvent.detail as any).control);
-      
-      (this as unknown as ControlValueAccessor).writeValue((this as unknown as ControlValueAccessor).control.value);
-      
+    public get formControl() {
+      return this._formControl;
     }
 
-    private _setControlAndInitialValue(control: AbstractControl) {
+    public set formControl(value: AbstractControl) {
+      this._formControl = value;
+    }
 
-      (this as unknown as { control: AbstractControl }).control = control;
+    connectedCallback() {
+      
+      this._setInitialValue();
 
-      (this as any).value = (this as unknown as ControlValueAccessor).control.value;
+    }
+
+    private _setInitialValue() {      
+      (this as unknown as ControlValueAccessor).writeValue(this._formControl.value);
     }
   }
 }

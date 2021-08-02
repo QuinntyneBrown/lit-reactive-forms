@@ -1,6 +1,6 @@
-import { ChildPart, nothing } from 'lit';
-import {  AsyncDirective, directive  } from 'lit/async-directive.js';
-import { BehaviorSubject, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { ChildPart, noChange, nothing } from 'lit';
+import { AsyncDirective, directive  } from 'lit/async-directive.js';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 
 
 export class Push extends AsyncDirective {
@@ -20,7 +20,7 @@ export class Push extends AsyncDirective {
         )
         .subscribe();
 
-        return nothing;
+        return noChange;
       }
 
       override disconnected() {
@@ -29,4 +29,4 @@ export class Push extends AsyncDirective {
       }
 }
 
-export const push = directive(Push);
+export const async = directive(Push);
