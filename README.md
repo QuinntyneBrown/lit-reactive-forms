@@ -1,15 +1,8 @@
-# 🚀 Welcome to your new awesome project!
+# Lit Reactive Forms
+Poor man's implementation of angular reactive forms in web components.
 
-This project has been created using **webpack-cli**, you can now run
+## Technology
+- lit-html for template rendering
+- rxjs for pushing state around and general awesomeness
 
-```
-npm run build
-```
 
-or
-
-```
-yarn build
-```
-
-to bundle your application
