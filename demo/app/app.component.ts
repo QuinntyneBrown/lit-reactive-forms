@@ -9,27 +9,30 @@ class AppComponent extends HTMLElement {
 
     searchControl = new FormControl('search', [Validators.required]);
 
-    nameControl = new FormControl('name', []);;
+    nameControl = new FormControl('name', [Validators.required]);
 
     connectedCallback() {    
         if (!this.shadowRoot) this.attachShadow({ mode: 'open' });
   
         render(html`
         
-        <h2>Search</h2>         
-        
-        <input is="lit-input" .formControl=${this.searchControl}>       
-        
-        <h1>${async(this.searchControl.valueChanges)}</h1>
+            <div>
+                <label>Search</label>                     
+                <input is="lit-input" .formControl=${this.searchControl}>       
+            </div>
 
-        <h2>Name</h2>         
+            <div>
+                <label>Name</label>                     
+                <input is="lit-input" .formControl=${this.nameControl}> 
+            </div>
         
-        <input is="lit-input" .formControl=${this.nameControl}>       
-        
-        <h1>${async(this.nameControl.valueChanges)}</h1>        
+            <button @click=${this.handleClick}>Save</button>
 
-        <button @click=${this.handleClick}>Save</button>
-        
+            <!-- Show output -->
+            <p>${async(this.searchControl.valueChanges)}</p>
+
+            <p>${async(this.nameControl.valueChanges)}</p>        
+            
         `, this.shadowRoot) 
     }
 
