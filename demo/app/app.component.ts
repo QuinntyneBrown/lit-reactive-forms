@@ -1,59 +1,35 @@
 import { render } from "lit-html";
-import { BehaviorSubject, combineLatest, map, of, Subject, takeUntil, tap } from "rxjs";
+import { BehaviorSubject, combineLatest, map, of, shareReplay, Subject, takeUntil, tap } from "rxjs";
 import { StyleInfo } from 'lit-html/directives/style-map.js';
 import { html, unsafeStatic } from "lit-html/static.js";
 
 import "./App.component.scss";
 import { FormControl } from "../../src/models/form-control";
-import { FORM_CONTROL_CONNECTED } from "../../src/core/constants";
-
+import { getVariableName } from "../../src/core";
+import { push } from './push.directive';
 
 class AppComponent extends HTMLElement {
-    private readonly _destroyed$: Subject<void> = new Subject();
-
-    private readonly _attributes$: BehaviorSubject<{
-
-    }> = new BehaviorSubject({ });
-
-    constructor() {
-        super();
-    }
-
-    private readonly _vm$ = combineLatest([this._attributes$]);
-    
-    static get observedAttributes(): any[] {
-        return [
-
-        ];
-    }
-
     connectedCallback() {    
         if (!this.shadowRoot) this.attachShadow({ mode: 'open' });
   
-        var control = new FormControl(1);
+        const searchControl = FormControl.create(this, "searchControl");
 
-        this.addEventListener(FORM_CONTROL_CONNECTED, event$ => {
-            event$.stopPropagation();
-            Object.assign((event$ as CustomEvent).detail, { control });
-        });
+        const nameControl = FormControl.create(this, "nameControl");
+
+        render(html`
         
-        this._vm$
-        .pipe(
-            takeUntil(this._destroyed$),
-            map(vm => html`
-               <input is="lit-input">
-            `),
-            tap(template => render(template, this.shadowRoot)),            
-        ).subscribe();   
-    }
-    
-    attributeChangedCallback (name:string, _:any, newValue:string) {
+        <h2>Search</h2>         
+        <input is="lit-input" [formControl]="searchControl">       
+        <h1>${push(searchControl.valueChanges)}</h1>
+        
+        <h2>Other</h2>         
+        <input is="lit-input" [formControl]="nameControl">     
 
-    }
 
-    disconnectedCallback() {
-        this._destroyed$.next();
-        this._destroyed$.complete();
+
+        <h1>${push(nameControl.valueChanges)}</h1>
+        
+        `, this.shadowRoot) 
     }
 }
 

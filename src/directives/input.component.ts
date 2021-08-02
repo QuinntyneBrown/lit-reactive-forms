@@ -1,31 +1,44 @@
 import { FormControl } from '../models/form-control';
 import { FORM_CONTROL_CONNECTED } from '../core/constants';
 import { Subject, takeUntil, tap } from 'rxjs';
+import { BaseControlComponent, ControlValueAccessor } from './control-value-accessor';
+import { AbstractControl } from 'src/models/abstract-control';
 
-export class InputComponent extends HTMLInputElement {
+export class InputComponent extends BaseControlComponent(HTMLInputElement) implements ControlValueAccessor {
+    writeValue(obj: any): void {
+        this.value = obj;
+    }
+
+    registerOnChange(fn: any): void {
+        this.addEventListener("keyup", () => {
+            fn(this.value);
+        });
+    }
+
+    registerOnTouched(fn: any): void {
+        
+    }
+
+    setDisabledState?(isDisabled: boolean): void {
+
+    }
     
     private readonly _destroyed$ = new Subject();
 
-    public control!: FormControl;
+    public control: AbstractControl;
 
     connectedCallback() {
-        var customEvent = new CustomEvent(FORM_CONTROL_CONNECTED, {
-            bubbles: true,
-            composed: true,
-            cancelable: false,
-            detail: { }            
+        super.connectedCallback();
+        
+        this.registerOnChange((value: any) =>  {
+            this.control.patchValue(value,{
+                emitEvent: true
+            })
         });
-
-        this.dispatchEvent(customEvent);
-
-        this.control = (customEvent.detail as any).control;
-
-        this.value = this.control.value;
-
+        
         this.control.valueChanges
         .pipe(
             takeUntil(this._destroyed$),
-            tap(x => alert("?")),
             tap(x => (this.value = x))
         ).subscribe();
 
@@ -36,12 +49,6 @@ export class InputComponent extends HTMLInputElement {
                 // set classes based on statuses...
             })
         ).subscribe();
-
-
-        this.addEventListener("keyup", value => {
-            this.control.patchValue(value, { emitEvent: false });
-            //this.control.validate()?
-        });
     }
 
     disconnectedCallback() {

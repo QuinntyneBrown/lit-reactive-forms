@@ -1,4 +1,5 @@
 import { lastValueFrom } from "rxjs";
+import { FORM_CONTROL_CONNECTED } from "../core/constants";
 import { ValidatorFn } from "../validators/interfaces/validtor-fn";
 import { AbstractControl } from "./abstract-control";
 
@@ -13,8 +14,9 @@ export class FormControl extends AbstractControl {
     
     constructor(formState:any = null, validatorOrOpts?: ValidatorFn|ValidatorFn[]| null) {
         super();
-        this.setValue(formState);
         this._initObservables();
+        this.setValue(formState);
+        
     }
 
     setValue(value: any, options: {
@@ -22,8 +24,15 @@ export class FormControl extends AbstractControl {
         emitEvent?: boolean,
         emitModelToViewChange?: boolean,
         emitViewToModelChange?: boolean
-      } = {}): void {
-        this.value = value;
+      } = {
+          emitEvent: true
+      }): void {
+
+        (this as {value: any}).value = value;
+
+        if(options.emitEvent) {
+            this.valueChanges.next(value);
+        }
     }
 
     patchValue(value: any, options: {
@@ -32,7 +41,7 @@ export class FormControl extends AbstractControl {
         emitModelToViewChange?: boolean,
         emitViewToModelChange?: boolean
       } = {}): void {
-
+        this.setValue(value, options);
     }
     reset(value?: any, options?: Object): void {
 
@@ -51,6 +60,20 @@ export class FormControl extends AbstractControl {
     }
     _syncPendingControls(): boolean {
         return false;
+    }
+
+    public static create(host: HTMLElement,name: string, value:any = null, validators?: any[] | null): FormControl {
+        var control = new FormControl(value, validators);
+
+        host.addEventListener(FORM_CONTROL_CONNECTED, event$ => {
+            event$.stopPropagation();
+
+            if((event$ as CustomEvent).detail.formControl == name) {
+                Object.assign((event$ as CustomEvent).detail, { control });
+            }
+        });
+
+        return control;
     }
 
 }

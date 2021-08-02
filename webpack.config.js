@@ -62,5 +62,6 @@ module.exports = () => {
   } else {
     config.mode = "development";
   }
+  config.mode = "production";
   return config;
 };

@@ -1,10 +1,10 @@
-import { Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { ValidationErrors } from "../validators/interfaces/validtor-fn";
 import { DISABLED, INVALID, PENDING, VALID } from "./constants";
 import { FormGroup } from "./form-group";
 
 export abstract class AbstractControl {
-    public value: any;
+    public readonly value: any;
     
     private _parent: FormGroup|null;
 
@@ -48,9 +48,9 @@ export abstract class AbstractControl {
         return !this.touched;
     }    
 
-    public readonly valueChanges: Observable<any>;    
+    public readonly valueChanges: BehaviorSubject<any>;    
 
-    public readonly statusChanges: Observable<any>;    
+    public readonly statusChanges: BehaviorSubject<any>;    
 
     setParent(parent: FormGroup): void {
         this._parent = parent;
@@ -66,15 +66,25 @@ export abstract class AbstractControl {
         return VALID;
     }    
 
-    abstract setValue(value: any, options?: Object): void;
+    abstract setValue(value: any, options?: {
+        onlySelf?: boolean,
+        emitEvent?: boolean,
+        emitModelToViewChange?: boolean,
+        emitViewToModelChange?: boolean
+      }): void;
 
-    abstract patchValue(value: any, options?: Object): void;
+    abstract patchValue(value: any, options?: {
+        onlySelf?: boolean,
+        emitEvent?: boolean,
+        emitModelToViewChange?: boolean,
+        emitViewToModelChange?: boolean
+      }): void;
 
     abstract reset(value?: any, options?: Object): void;
 
     _initObservables() {
-        (this as {valueChanges: Observable<any>}).valueChanges = new Subject();
-        (this as {statusChanges: Observable<any>}).statusChanges = new Subject();
+        (this as {valueChanges: Observable<any>}).valueChanges = new BehaviorSubject(null);
+        (this as {statusChanges: Observable<any>}).statusChanges = new BehaviorSubject(null);
     }
 
     abstract _updateValue(): void;
