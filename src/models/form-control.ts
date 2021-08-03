@@ -3,7 +3,6 @@ import { AbstractControl } from "./abstract-control";
 
 export class FormControl extends AbstractControl {
 
-    
     _onChange: Function[] = [];
     _validators: ValidatorFn|ValidatorFn[]| null;
     
