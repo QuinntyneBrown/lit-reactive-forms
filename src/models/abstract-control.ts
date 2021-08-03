@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { ValidationErrors } from "../validators/validtor-fn";
+import { ValidationErrors, ValidatorFn } from "../validators/validtor-fn";
 import { DISABLED, INVALID, PENDING, VALID } from "./constants";
 import { FormGroup } from "./form-group";
 
@@ -7,11 +7,32 @@ export abstract class AbstractControl {
     public readonly value: any;
     
     private _parent: FormGroup|null;
+    private _rawValidators: ValidatorFn[] | ValidatorFn;
+    private _composedValidatorFn: ValidatorFn;    
 
+    constructor(validators: ValidatorFn|ValidatorFn[]|null) {
+        this._rawValidators = validators;
+    }
     public readonly status!: string;
 
     get parent(): FormGroup|null {
         return this._parent;
+    }
+
+    public enable() {
+
+    }
+
+    public disable() {
+        
+    }
+
+    get validator(): ValidatorFn|null {
+        return this._composedValidatorFn;
+    }
+    
+    set validator(validatorFn: ValidatorFn|null) {
+        this._rawValidators = this._composedValidatorFn = validatorFn;      
     }
 
     get valid(): boolean {
@@ -48,6 +69,10 @@ export abstract class AbstractControl {
         return !this.touched;
     }    
 
+    private _anyControlsHaveStatus(status:string) {
+        return false;
+    }
+
     public readonly valueChanges: BehaviorSubject<any>;    
 
     public readonly statusChanges: BehaviorSubject<any>;    
@@ -57,12 +82,9 @@ export abstract class AbstractControl {
     } 
 
     private _calculateStatus(): string {
-
-        //152 - 
-        // if (this._allControlsDisabled()) return DISABLED;
-        // if (this.errors) return INVALID;
-        // if (this._hasOwnPendingAsyncValidator || this._anyControlsHaveStatus(PENDING)) return PENDING;
-        // if (this._anyControlsHaveStatus(INVALID)) return INVALID;
+        if (this._allControlsDisabled()) return DISABLED;
+        if (this.errors) return INVALID;
+        if (this._anyControlsHaveStatus(INVALID)) return INVALID;
         return VALID;
     }    
 

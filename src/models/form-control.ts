@@ -5,16 +5,18 @@ export class FormControl extends AbstractControl {
 
     
     _onChange: Function[] = [];
+    _validators: ValidatorFn|ValidatorFn[]| null;
     
     registerOnChange(fn: Function): void {
       this._onChange.push(fn);
     }
     
     constructor(formState:any = null, validatorOrOpts?: ValidatorFn|ValidatorFn[]| null) {
-        super();
+        super(validatorOrOpts);
+        this._validators = validatorOrOpts;
         this._initObservables();
         this.setValue(formState);
-        
+
     }
 
     setValue(value: any, options: {
@@ -27,6 +29,12 @@ export class FormControl extends AbstractControl {
       }): void {
 
         (this as {value: any}).value = value;
+
+        let validators = this._validators as ValidatorFn[];
+
+        for(let i = 0; i < validators.length; i++) {
+            var result = validators[i](this);             
+        }
 
         if(options.emitEvent) {
             this.valueChanges.next(value);

@@ -1,4 +1,4 @@
-import { Subject, takeUntil, tap } from "rxjs";
+import { fromEvent, Subject, takeUntil, tap } from "rxjs";
 import { HTMLElementContructor } from '../core/html-element-constructor';
 import { ControlValueAccessor } from "./control-value-accessor";
 import { AbstractControl } from '../../src/models/abstract-control';
@@ -17,11 +17,19 @@ export function BaseControlComponent<TBase extends HTMLElementContructor>(Base: 
       }
   
       registerOnTouched(fn: any): void {
-        
+          this.querySelectorAll("*")
+          .forEach((element: HTMLElement) => {
+          fromEvent(element, "focus")
+            .pipe(
+              takeUntil(this._destroyed$),
+              tap(x => fn())
+            )
+            .subscribe();
+        });
       }
   
       setDisabledState?(isDisabled: boolean): void {
-        
+        isDisabled ? this.formControl.disable() : this.formControl.enable();
       }
   
       private _formControl: AbstractControl;
@@ -42,14 +50,20 @@ export function BaseControlComponent<TBase extends HTMLElementContructor>(Base: 
             emitEvent: true
           })
         });
+
+        this.formControl.valueChanges
+        .pipe(
+            takeUntil(this._destroyed$),
+            tap(x => this.writeValue(x))
+        ).subscribe();        
   
-      this.formControl.statusChanges
-      .pipe(
-        takeUntil(this._destroyed$),
-        tap(x => { 
-              // set classes based on statuses...
-          })
-      ).subscribe();
+        this.formControl.statusChanges
+        .pipe(
+          takeUntil(this._destroyed$),
+          tap(x => { 
+                // set classes based on statuses...
+            })
+        ).subscribe();
       }
   
       disconnectedCallback() {
@@ -58,7 +72,7 @@ export function BaseControlComponent<TBase extends HTMLElementContructor>(Base: 
       }
   
       private _setInitialValue() {      
-        (this as unknown as ControlValueAccessor).writeValue(this._formControl.value);
+        this.writeValue(this._formControl.value);
       }
     }
   }

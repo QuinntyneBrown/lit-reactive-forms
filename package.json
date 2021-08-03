@@ -1,7 +1,7 @@
 {
-  "name": "my-webpack-project",
+  "name": "lit-reactive-forms",
   "version": "1.0.0",
-  "description": "My webpack project",
+  "description": "Lit Reactive Forms",
   "main": "index.js",
   "dependencies": {
     "lit": "^2.0.0-rc.2",

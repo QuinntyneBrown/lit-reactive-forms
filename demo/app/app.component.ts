@@ -3,7 +3,7 @@ import { FormControl } from "../../src/models/form-control";
 import { async } from '../../src/core/async.directive';
 import { Validators } from '../../src/validators/validators';
 
-import "./App.component.scss";
+import "./app.component.scss";
 
 class AppComponent extends HTMLElement {
 
@@ -11,11 +11,8 @@ class AppComponent extends HTMLElement {
 
     nameControl = new FormControl('name', [Validators.required]);
 
-    connectedCallback() {    
-        if (!this.shadowRoot) this.attachShadow({ mode: 'open' });
-  
-        render(html`
-        
+    connectedCallback() {            
+        render(html`       
             <div>
                 <label>Search</label>                     
                 <input is="lit-input" .formControl=${this.searchControl}>       
@@ -33,12 +30,10 @@ class AppComponent extends HTMLElement {
 
             <p>${async(this.nameControl.valueChanges)}</p>        
             
-        `, this.shadowRoot) 
+        `, this);
     }
 
-    handleClick = () => {
-        alert(this.searchControl.value);
-    }
+    handleClick = () => alert(this.searchControl.value);
 }
 
 window.customElements.define('lit-app', AppComponent);
