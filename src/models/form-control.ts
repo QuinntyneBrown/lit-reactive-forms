@@ -1,6 +1,4 @@
-import { lastValueFrom } from "rxjs";
-import { FORM_CONTROL_CONNECTED } from "../core/constants";
-import { ValidatorFn } from "../validators/interfaces/validtor-fn";
+import { ValidatorFn } from "../validators/validtor-fn";
 import { AbstractControl } from "./abstract-control";
 
 export class FormControl extends AbstractControl {

@@ -1,4 +1,4 @@
-import { AbstractControl } from "../../models/abstract-control";
+import { AbstractControl } from "../models/abstract-control";
 
 export type ValidationErrors = {
     [key: string]: any

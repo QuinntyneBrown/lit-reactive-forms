@@ -1,5 +1,5 @@
-import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { ValidationErrors } from "../validators/interfaces/validtor-fn";
+import { BehaviorSubject, Observable } from "rxjs";
+import { ValidationErrors } from "../validators/validtor-fn";
 import { DISABLED, INVALID, PENDING, VALID } from "./constants";
 import { FormGroup } from "./form-group";
 

@@ -1,3 +1,3 @@
-export * from './directives';
+export * from './controls';
 export * from './version';
 export * from '../demo';
