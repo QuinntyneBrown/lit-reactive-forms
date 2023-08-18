@@ -1,39 +1,36 @@
 import { render, html } from "lit";
 import { FormControl } from "../../src/models/form-control";
-import { async } from '../../src/core/async.directive';
+import push from '../../src/core/push.directive';
 import { Validators } from '../../src/validators/validators';
 
 import "./app.component.scss";
 
+
 class AppComponent extends HTMLElement {
+    connectedCallback() { 
+        const searchControl = new FormControl('search', [Validators.required]);
+        const nameControl = new FormControl('name', [Validators.required]);
 
-    searchControl = new FormControl('search', [Validators.required]);
-
-    nameControl = new FormControl('name', [Validators.required]);
-
-    connectedCallback() {            
         render(html`       
             <div>
                 <label>Search</label>                     
-                <input is="lit-input" .formControl=${this.searchControl}>       
+                <input is="lit-input" .formControl=${searchControl}>       
             </div>
 
             <div>
                 <label>Name</label>                     
-                <input is="lit-input" .formControl=${this.nameControl}> 
+                <input is="lit-input" .formControl=${nameControl}> 
             </div>
         
-            <button @click=${this.handleClick}>Save</button>
+            <button @click=${() => alert(searchControl.value)}>Save</button>
 
             <!-- Show output -->
-            <p>${async(this.searchControl.valueChanges)}</p>
+            <p>${push(searchControl.valueChanges)}</p>
 
-            <p>${async(this.nameControl.valueChanges)}</p>        
+            <p>${push(nameControl.valueChanges)}</p>        
             
         `, this);
     }
-
-    handleClick = () => alert(this.searchControl.value);
 }
 
 window.customElements.define('lit-app', AppComponent);

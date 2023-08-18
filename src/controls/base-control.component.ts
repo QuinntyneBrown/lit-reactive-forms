@@ -8,13 +8,9 @@ export function BaseControlComponent<TBase extends HTMLElementContructor>(Base: 
   
       protected readonly _destroyed$ = new Subject();
       
-      writeValue(obj: any): void {
-        
-      }
+      writeValue(obj: any): void { }
   
-      registerOnChange(fn: any): void {
-        
-      }
+      registerOnChange(fn: any): void { }
   
       registerOnTouched(fn: any): void {
           this.querySelectorAll("*")
@@ -22,7 +18,7 @@ export function BaseControlComponent<TBase extends HTMLElementContructor>(Base: 
           fromEvent(element, "focus")
             .pipe(
               takeUntil(this._destroyed$),
-              tap(x => fn())
+              tap((x: unknown) => fn())
             )
             .subscribe();
         });
@@ -54,13 +50,13 @@ export function BaseControlComponent<TBase extends HTMLElementContructor>(Base: 
         this.formControl.valueChanges
         .pipe(
             takeUntil(this._destroyed$),
-            tap(x => this.writeValue(x))
+            tap((x: unknown) => this.writeValue(x))
         ).subscribe();        
   
         this.formControl.statusChanges
         .pipe(
           takeUntil(this._destroyed$),
-          tap(x => { 
+          tap((x: unknown) => { 
                 // set classes based on statuses...
             })
         ).subscribe();

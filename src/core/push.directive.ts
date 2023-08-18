@@ -2,11 +2,10 @@ import { ChildPart, noChange, nothing } from 'lit';
 import { AsyncDirective, directive  } from 'lit/async-directive.js';
 import { Observable, Subject, takeUntil, tap } from 'rxjs';
 
-
 export class Push extends AsyncDirective {
     protected _destroyed$ = new Subject();
 
-    render(obs$: Observable<string>): typeof nothing {
+    render(obs$: Observable<unknown>): typeof nothing {
         return nothing;
     }
 
@@ -16,7 +15,7 @@ export class Push extends AsyncDirective {
         obs$
         .pipe(
             takeUntil(this._destroyed$),
-            tap(x => this.setValue(x))
+            tap((x: unknown) => this.setValue(x))
         )
         .subscribe();
 
@@ -29,4 +28,4 @@ export class Push extends AsyncDirective {
       }
 }
 
-export const async = directive(Push);
+export default directive(Push);
